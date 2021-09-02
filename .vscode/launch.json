@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "run",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/presets/run.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/presets/",
+            "args": [
+                "var/ma2/ma2.json",
+                "train",
+                "5"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/../hedgingbox/"
+            }
+        }
+    ]
+}

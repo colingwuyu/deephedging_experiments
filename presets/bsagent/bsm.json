@@ -1,0 +1,65 @@
+{
+    "market": {
+        "name": "SPX-Multi-Agent",
+        "valuation_date": "2020-09-30",
+        "reward_rule": "PnLReward",
+        "hedging_step_in_days": 1,
+        "num_steps_per_episode": 11,
+        "validation_rng_seed": 1234,
+        "training_episodes": 1000,
+        "validation_episodes": 500,
+        "riskfactorsimulator": {
+            "ir": 0.02,
+            "equity": [
+                {
+                    "name": "SPX",
+                    "riskfactors": [
+                        "Spot",
+                        "Vol 2020-10-02x100",
+                        "Vol 2030-09-28x100"
+                    ],
+                    "process_param": {
+                        "process_type": "GBM",
+                        "param": {
+                            "spot": 100,
+                            "drift": 0.1,
+                            "dividend": 0.0,
+                            "vol": 0.3
+                        }
+                    }
+                }
+            ],
+            "correlation": []
+        }, 
+        "instruments" : [
+            "Stock SPX 10 0 0",
+            "EuroOpt SPX OTC 2020-12-31 Call 100.50 0.5 (SPX-OTC)"
+        ]
+    },
+    "agents": [
+        {
+            "name": "Greek-Delta",
+            "agent_type": "Greek",
+            "portfolio": {
+                "risk_limits": {
+                    "delta": [-3, 3]
+                },
+                "positions": [
+                    {
+                        "holding": 5,
+                        "trading_limit": [-5,5],
+                        "instrument": "SPX"
+                    },
+                    {
+                        "holding": -10,
+                        "instrument": "SPX-OTC"
+                    }
+                ]
+            },
+            "model_path": "bsagent/bsm/",
+            "hedging_strategies": ["EuroDeltaHedgingStrategy"]
+        }
+    ],
+    "trainable_agent": "Greek-Delta",
+    "log_path": "bsagent/bsm/"
+}

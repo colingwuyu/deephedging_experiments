@@ -1,0 +1,137 @@
+{
+    "market": {
+        "name": "SPX-Multi-Agent",
+        "valuation_date": "2020-09-30",
+        "reward_rule": "PnLReward",
+        "hedging_step_in_days": 1,
+        "num_steps_per_episode": 11,
+        "validation_rng_seed": 1234,
+        "training_episodes": 1000,
+        "validation_episodes": 500,
+        "riskfactorsimulator": {
+            "ir": 0.02,
+            "equity": [
+                {
+                    "name": "SPX",
+                    "riskfactors": [
+                        "Spot",
+                        "Vol 2020-10-02x100",
+                        "Vol 2030-09-28x100"
+                    ],
+                    "process_param": {
+                        "process_type": "GBM",
+                        "param": {
+                            "spot": 100,
+                            "drift": 0.1,
+                            "dividend": 0.0,
+                            "vol": 0.3
+                        }
+                    }
+                }
+            ],
+            "correlation": []
+        }, 
+        "instruments" : [
+            "Stock SPX 10 0 0 10 0.063",
+            "EuroOpt SPX OTC 2020-12-31 Call 100.50 0.5 (SPX-OTC)"
+        ]
+    },
+    "agents": [
+        {
+            "name": "BSM-MI",
+            "agent_type": "Greek",
+            "portfolio": {
+                "risk_limits": {
+                    "delta": [-3, 3]
+                },
+                "positions": [
+                    {
+                        "holding": 5,
+                        "trading_limit": [-5,5],
+                        "instrument": "SPX"
+                    },
+                    {
+                        "holding": -10,
+                        "instrument": "SPX-OTC"
+                    }
+                ]
+            },
+            "model_path": "bsagent/",
+            "hedging_strategies": ["EuroDeltaHedgingStrategy"]
+        },
+        {
+            "name": "RL1",
+            "agent_type": "D4PG",
+            "portfolio": {
+                "positions": [
+                    {
+                        "holding": 5,
+                        "trading_limit": [-3,3],
+                        "holding_constraints": [0, 10],
+                        "instrument": "SPX"
+                    },
+                    {
+                        "holding": -10,
+                        "instrument": "SPX-OTC"
+                    }
+                ]
+            },
+            "model_path": "mean_var/sa/",
+            "networks": {
+                "policy_layer_sizes": [256, 256, 256],
+                "critic_layer_sizes": [512, 512, 256],
+                "vmin": -150,
+                "vmax": 150,
+                "num_atoms": 51
+            },
+            "parameters": {
+                "risk_obj_func": true,
+                "risk_obj_c": 1.0,
+                "mu_lambda": 0,
+                "batch_size": 256,
+                "n_step": 5,
+                "sigma": 0.08,
+                "samples_per_insert": 32,
+                "checkpoint_per_min": 30
+            }
+        },
+        {
+            "name": "RL2",
+            "agent_type": "D4PG",
+            "portfolio": {
+                "positions": [
+                    {
+                        "holding": 5,
+                        "trading_limit": [-3,3],
+                        "holding_constraints": [0, 10],
+                        "instrument": "SPX"
+                    },
+                    {
+                        "holding": -10,
+                        "instrument": "SPX-OTC"
+                    }
+                ]
+            },
+            "model_path": "mean_var/ma2/",
+            "networks": {
+                "policy_layer_sizes": [256, 256, 256],
+                "critic_layer_sizes": [512, 512, 256],
+                "vmin": -150,
+                "vmax": 150,
+                "num_atoms": 51
+            },
+            "parameters": {
+                "risk_obj_func": true,
+                "risk_obj_c": 1.0,
+                "mu_lambda": 0,
+                "batch_size": 256,
+                "n_step": 5,
+                "sigma": 0.08,
+                "samples_per_insert": 32,
+                "checkpoint_per_min": 30
+            }
+        }
+    ],
+    "trainable_agent": "RL2",
+    "log_path": "mean_var/ma4/"
+}
