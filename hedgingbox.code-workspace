@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "."
+		},
+		{
+			"path": "../colab_vscode"
 		}
 	],
 	"settings": {}
