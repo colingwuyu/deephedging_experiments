@@ -1,0 +1,73 @@
+{
+    "market": {
+        "name": "SPX-Multi-Agent",
+        "valuation_date": "2020-09-30",
+        "reward_rule": "PnLReward",
+        "hedging_step_in_days": 1,
+        "num_steps_per_episode": 11,
+        "validation_rng_seed": 1234,
+        "training_episodes": 1000,
+        "validation_episodes": 500,
+        "riskfactorsimulator": {
+            "ir": 0.02,
+            "equity": [
+                {
+                    "name": "SPX",
+                    "riskfactors": [
+                        "Spot",
+                        "Vol 2020-10-02x100",
+                        "Vol 2030-09-28x100"
+                    ],
+                    "process_param": {
+                        "process_type": "GBM",
+                        "param": {
+                            "spot": 100,
+                            "drift": 0.1,
+                            "dividend": 0.0,
+                            "vol": 0.3
+                        }
+                    }
+                }
+            ],
+            "correlation": []
+        },
+        "instruments": [
+            "Stock SPX 10 0 0 10 0.063",
+            "EuroOpt SPX OTC 2020-12-31 Call 100.50 0.5 (SPX-OTC)"
+        ]
+    },
+    "agents": [
+        {
+            "name": "RL1",
+            "agent_type": "D4PG",
+            "portfolio": {
+                "positions": [
+                    {
+                        "holding": 5,
+                        "trading_limit": [
+                            -3,
+                            3
+                        ],
+                        "holding_constraints": [
+                            0,
+                            10
+                        ],
+                        "instrument": "SPX"
+                    },
+                    {
+                        "holding": -10,
+                        "instrument": "SPX-OTC"
+                    }
+                ]
+            },
+            "model_path": "var/sa/RL1.bot",
+            "parameters": {
+                "risk_obj_func": true,
+                "risk_obj_c": 1.0,
+                "mu_lambda": 0
+            }
+        }
+    ],
+    "trainable_agent": "RL1",
+    "log_path": "var/sa/"
+}
